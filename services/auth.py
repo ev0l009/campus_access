@@ -1,4 +1,4 @@
-from utils.helpers import generate_id
+from utils.helpers import generate_id, generate_user_data
 
 from main import data
 
@@ -17,7 +17,7 @@ def create_user(user):
 
     id = generate_id(user)
 
-    # data["users"][user][id] = 
+    data["users"][user][id] = generate_user_data(user, id)
 
 
 def login_user(user):

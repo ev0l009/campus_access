@@ -39,7 +39,7 @@
                 "issued_card_id": "",
                 "issued_card": ""
             }
-        },
+        }
     },
     "requests": {
         "rqt_id": {
