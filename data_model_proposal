@@ -20,7 +20,7 @@
                 "issued_card": ""
             }
         },
-        "student": {
+        "students": {
             "stf_id": {
                 "stf_id": "",
                 "name": "",

@@ -1,0 +1,18 @@
+{
+    "users": {
+        "admin": {
+            "adm_NMMn": {
+                "adm_id": "adm_NMMn",
+                "name": "",
+                "password": "pass",
+                "approved_requests_id": [],
+                "issued_card_ids": []
+            }
+        },
+        "staff": {},
+        "student": {},
+        "visitor": {}
+    },
+    "requests": {},
+    "cards": {}
+}

@@ -1,33 +1,38 @@
 from utils.helpers import generate_id, generate_user_data
 
-from main import data
-
-def create_user(user):
+def create_user(user_type, data):
     name = input("Enter your name: ")
-    if not name.strip() or len(name.strip()) < 5:
-        raise ValueError("Name canot be empty and must be greater than 5 characters")
+    if not name.strip() or len(name.strip()) < 3:
+        raise ValueError("Name canot be empty and must be greater than 3 characters")
     
     password = input("Enter your password: ")
-    if not password.strip() or len(password.strip()) < 5:
-        raise ValueError("Password canot be empty and must be greater than 5 characters")
+    if not password.strip() or len(password) < 4:
+        raise ValueError("Password must be greater than 4 characters and canot be empty.")
 
     confirmed_password = input("Confirm your password: ")
     if password != confirmed_password:
         raise ValueError("Passwords do not match.")
 
-    id = generate_id(user)
+    id = generate_id(user_type)
 
-    data["users"][user][id] = generate_user_data(user, id)
+    data["users"][user_type][id] = generate_user_data(user_type, id, password)
+
+    print(
+        "Registeration successful!\n"
+        f"Please note your ID: {id}"
+    )
+
+    return "login"
 
 
-def login_user(user):
+def login_user(user, data):
     id = input("Enter your ID: ")
     password = input("Enter your password: ")
 
-    if id not in data["user"][user]:
+    if id not in data["users"][user]:
         raise ValueError("Invalid ID credentials")
 
     if password != data["users"][user][id]["password"]:
         raise ValueError("Invalid password credentials")
 
-    return data["user"][user][id]
+    return "dashboard", data["users"][user][id]

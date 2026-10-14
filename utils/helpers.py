@@ -10,15 +10,15 @@ def generate_id(user_type):
     }
 
     pool = string.ascii_letters + string.digits
-    suffix = secrets.choice(pool for _ in range(3))
+    suffix = "".join(secrets.choice(pool) for _ in range(4))
     return f"{preffix[user_type]}_{suffix}"
 
-def generate_user_data(user_type, user_id):
+def generate_user_data(user_type, user_id, password):
     if user_type == "admin":
         return {
                 "adm_id": user_id,
                 "name": "",
-                "password": "",
+                "password": password,
                 "approved_requests_id": [],
                 "issued_card_ids": []
             }
@@ -26,7 +26,7 @@ def generate_user_data(user_type, user_id):
         return {
                 "stf_id": user_id,
                 "name": "",
-                "password": "",
+                "password": password,
                 "issued_card_id": "",
                 "created_requests_id": [],
                 "approved_requests_id": [],
@@ -36,7 +36,7 @@ def generate_user_data(user_type, user_id):
         return {
                 "stf_id": user_id,
                 "name": "",
-                "password": "",
+                "password": password,
                 "created_requests_id": [],
                 "issued_card_id": "",
                 "issued_card": ""
@@ -45,7 +45,7 @@ def generate_user_data(user_type, user_id):
         return {
                 "vst_id": user_id,
                 "name": "",
-                "password": "",
+                "password": password,
                 "created_requests_id": [],
                 "issued_card_id": "",
                 "issued_card": ""
