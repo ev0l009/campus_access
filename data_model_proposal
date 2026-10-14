@@ -1,0 +1,62 @@
+{   
+    "users" :{
+        "admins": {
+            "adm_id": {
+                "adm_id": "",
+                "name": "",
+                "password": "",
+                "approved_requests_id": [],
+                "issued_card_ids": []
+            }
+        }, 
+        "staff": {
+            "stf_id": {
+                "stf_id": "",
+                "name": "",
+                "password": "",
+                "issued_card_id": "",
+                "created_requests_id": [],
+                "approved_requests_id": [],
+                "issued_card": ""
+            }
+        },
+        "student": {
+            "stf_id": {
+                "stf_id": "",
+                "name": "",
+                "password": "",
+                "created_requests_id": [],
+                "issued_card_id": "",
+                "issued_card": ""
+            }
+        },
+        "visitors": {
+            "vst_id": {
+                "vst_id": "",
+                "name": "",
+                "password": "",
+                "created_requests_id": [],
+                "issued_card_id": "",
+                "issued_card": ""
+            }
+        },
+    },
+    "requests": {
+        "rqt_id": {
+            "rqt_id": "",
+            "requester_id": "",
+            "card_type": "",
+            "status": "requested",
+            "approved_by": ""
+        }
+    },
+    "cards": {
+        "crd_id": {
+            "rqt_id": "",
+            "card_type": "",
+            "card_status": "",
+            "issued_to": "",
+            "approved_by": ""
+        }
+    }
+}
