@@ -1,31 +1,38 @@
 {
     "admins": {
-        "stf-id": {
-            "stf-id": "",
+        "adm_id": {
+            "adm_id": "",
             "name": "",
-            "approved_requests_id": []
+            "approved_requests_id": [],
+            "issued_card_ids": []
         }
     }, 
     "staff": {
-        "stf-id": {
-            "stf-id": "",
+        "stf_id": {
+            "stf_id": "",
             "name": "",
+            "issued_card_id": "",
             "created_requests_id": [],
-            "approved_requests_id": []
+            "approved_requests_id": [],
+            "issued_card": ""
         }
     },
-    "fellows": {
-        "stf-id": {
-            "stf-id": "",
+    "student": {
+        "stf_id": {
+            "stf_id": "",
             "name": "",
-            "created_requests_id": []
+            "created_requests_id": [],
+            "issued_card_id": "",
+            "issued_card": ""
         }
     },
     "visitors": {
-        "stf-id": {
-            "stf-id": "",
+        "vst_id": {
+            "vst_id": "",
             "name": "",
-            "created_requests_id": []
+            "created_requests_id": [],
+            "issued_card_id": "",
+            "issued_card": ""
         }
     },
     "requests": {

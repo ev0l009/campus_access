@@ -1,1 +1,0 @@
-A system that manages requests for access-cards.
