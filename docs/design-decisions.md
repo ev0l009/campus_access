@@ -1,75 +1,220 @@
-A system that manages requests for access-cards.
+Absolutely. We have enough direction to put together a concise design proposal. I've kept it in **Obsidian-friendly Markdown**, with the original project requirements and our agreed extensions brought together. Use it as a template and adjust anything you want before implementation.
 
-## Design Decision: Authorized Staff Approval
+```markdown
+# Campus Access — Project Design Proposal
 
-**Status:** Proposed — pending clarification of the original requirement.
+## 1. Project Goal
 
-### 1. Identified Ambiguity
+Build a Python CLI application that manages campus access-card requests, approvals, issuance, and returns.
 
-The project mission states:
+The application will support role-based permissions, persistent JSON storage, request tracking, and Git collaboration.
 
-> "A request must be created, approved by an authorized staff identifier, issued and eventually returned."
+## 2. User Roles
 
-However, the requirements do not explicitly define what makes a staff identifier authorized or how the application should verify that authorization.
+The application supports four roles:
 
-The specification requires a nonempty `approved_by` value before a request can move from `approved` to `issued`. However, a nonempty identifier alone does not establish that it belongs to an authorized staff member.
+- **Admin**
+- **Staff**
+- **Student**
+- **Visitor**
 
-**Decision:** We will flag this as an ambiguity in the original specification and adopt a staff registry as our proposed interpretation.
+Users must register and then log in using their assigned ID and password. Successful login opens a dashboard containing actions permitted for their role.
 
-### 2. Staff Registry and Authorization
+### Registration
 
-- The application will maintain a staff registry.
-- Staff members must be registered before they can approve access-card requests.
-- Every staff member in the registry is considered active and authorized to approve requests.
-- No distinction between staff roles or permission levels will be implemented.
-- Staff members can be registered and removed.
-- Attempting to remove a nonexistent staff member must fail.
-- Staff identifiers must be unique and must never be reused, even after a staff member is removed.
+- Users select a role during registration.
+- Each successfully registered user receives a unique ID.
+- User IDs must never be reused, even after the user is removed.
+- Users must provide the required registration details and a password.
+- Admin registration is currently open to everyone. This is a known security limitation.
 
-### 3. Staff Identification
+### Login
 
-For simplicity, staff members will identify themselves using their registered staff IDs.
+- Users select their role and enter their ID and password.
+- The system verifies their credentials and role before granting access.
+- Removed users must no longer be able to log in.
 
-The application will check whether the supplied identifier exists in the staff registry before allowing an approval.
+## 3. Card Requests
 
-**Scope limitation:** This approach verifies staff registration, but it does not securely establish the identity of the person supplying the identifier. Full authentication using additional credentials is outside the current project scope.
+Each request must store:
 
-### 4. Approval Rules
+- `id`
+- `fellow_id` — ID of the user requesting the card
+- `card_type`
+- `status`
+- `approved_by`
 
-- Only registered staff members may approve requests.
-- An empty staff identifier must be rejected.
-- An approval attempt by an unregistered staff member must be rejected.
-- A request may only be approved when its current status permits the operation.
-- An already approved request cannot be approved again.
-- Invalid operations must leave the request record unchanged.
+Card types are determined by the user's role:
 
-Since all registered staff members are authorized, no role-based permission checks are necessary.
+| User Role | Card Type |
+|---|---|
+| Visitor | Visitor |
+| Student | Student |
+| Staff | Staff |
+| Admin | Cannot request a card |
 
-### 5. Historical Approval Records
+Users cannot request a card belonging to another role.
 
-When a staff member approves a request, the request's `approved_by` field will retain that staff member's ID.
+Each request receives a unique ID that remains unique across application restarts.
 
-Removing the staff member from the registry must not erase or modify existing approval records.
+Users may have multiple outstanding requests. Each request follows its own lifecycle.
 
-This preserves historical context, allowing the application to retain the identity recorded at the time of approval even after the staff member has left.
+## 4. Request Lifecycle
 
-A removed staff member will no longer be authorized to approve new requests.
+Requests follow this sequence:
 
-### 6. Decisions Still to Be Confirmed
+`requested → approved → issued → returned`
 
-The following decisions are outside the immediate scope of this discussion:
+Rules:
 
-- The exact data structure and persistence design for the staff registry.
-- The detailed implementation of staff registration and removal.
-- How permanently used staff IDs will be tracked.
-- How the application will handle inconsistencies in persisted staff data.
+- Requests cannot skip stages.
+- Only authorized users may approve requests.
+- Only approved requests may be issued.
+- Approval and issuance are separate actions.
+- The same authorized staff member may approve and issue a request.
+- Returned requests are final and cannot be reopened.
+- A replacement card requires a new request.
+- Failed operations must leave the affected request unchanged.
 
-These matters will be addressed during the appropriate design phase.
+## 5. Permissions
 
-### 7. Rationale
+### Visitor and Student
 
-This interpretation keeps the application simple while introducing a clear rule for staff authorization.
+Users can:
 
-A staff registry provides a single reference for determining whether an identifier is currently authorized, while retaining historical approval identifiers preserves the integrity of existing request records.
+- Create their own card requests.
+- View and list their own requests.
+- View details of cards issued to them.
+- Return their own issued cards.
 
-The design adds staff management to the original project scope without introducing staff roles or a full authentication system.
+They cannot approve or issue cards.
+
+### Staff
+
+Staff can:
+
+- Create their own staff-card requests.
+- View their own requests.
+- View and approve visitor and student requests.
+- Issue approved visitor and student cards.
+- View cards they are responsible for issuing.
+- Return their own issued cards.
+
+Staff cannot approve staff-card requests.
+
+### Admin
+
+Admins can:
+
+- View requests across all user roles.
+- Approve visitor, student, and staff requests.
+- View issued-card records.
+- Register and remove users, subject to the agreed management rules.
+
+Admins cannot request cards.
+
+For this version, card issuance is handled by staff.
+
+## 6. Authorization Rules
+
+- Only logged-in users may perform protected actions.
+- Permissions are determined by the user's role.
+- Staff may approve visitor and student requests but not staff requests.
+- Only admins may approve staff requests.
+- Users may return only cards issued to them.
+- Removed staff members lose their authorization.
+- Removing a user must not erase historical requests or approval records.
+- Historical records retain the original approver's ID, even if that person is later removed.
+
+## 7. User Management
+
+- Users can be registered and removed.
+- Only admins may remove users.
+- A removed user's ID must never be assigned to another user.
+- Removed users cannot log in or perform actions.
+- Historical requests and card records must remain available.
+
+## 8. Data Persistence
+
+The application stores its data in JSON files.
+
+Persistent data includes:
+
+- Registered users and their roles.
+- The information required for login.
+- Requests and their current statuses.
+- Approval records.
+- Historical user-ID records needed to prevent ID reuse.
+
+Requirements:
+
+- Data must survive application restarts.
+- The application must load saved data on startup.
+- Malformed or invalid JSON data must produce a clear error.
+- Invalid data must never be silently replaced with empty data.
+- Failed operations must not accidentally corrupt saved records.
+
+## 9. Validation and Error Handling
+
+The application must reject:
+
+- Blank required fields.
+- Invalid user IDs or request IDs.
+- Duplicate user IDs or request IDs.
+- Invalid card types.
+- Incorrect login credentials.
+- Unauthorized actions.
+- Invalid status transitions.
+- Attempts to issue unapproved requests.
+- Attempts to approve requests outside the user's permissions.
+- Attempts to return another user's card.
+- Attempts to remove nonexistent users.
+
+Errors should be clear and understandable. Failed operations must not modify the affected records.
+
+## 10. Testing
+
+Tests should cover:
+
+- Registration and unique ID generation.
+- Login and credential validation.
+- Role-based permissions.
+- Request creation and ownership.
+- Approval and issuance rules.
+- Card returns and final status.
+- User removal and historical records.
+- JSON saving, loading, and malformed data.
+- Invalid inputs and failed operations.
+- ID uniqueness across application restarts.
+
+## 11. Known Limitations
+
+- Anyone can currently register as an admin.
+- The application is a CLI prototype rather than a production access-control system.
+- Password handling must be implemented carefully; plaintext password storage should be avoided.
+
+These limitations should be documented rather than treated as solved security problems.
+
+## 12. Development Approach
+
+- Use Python and its standard library where practical.
+- Organize the application into manageable modules.
+- Use Git and GitHub for version control and collaboration.
+- Develop features on separate branches and integrate them through merges or pull requests.
+- Test features as they are implemented.
+
+## 13. Definition of Done
+
+The project is complete when users can register and log in, role permissions are enforced, card requests follow the required lifecycle, records persist across restarts, invalid operations are handled safely, and the core behavior is covered by tests.
+```
+
+### A few things to check before you finalize it
+
+The direction is clear, but I deliberately left a few details open for you to decide:
+
+1. **Staff visibility:** Should staff see every visitor/student request, or only requests assigned to them? The proposal currently limits their visibility to requests they're responsible for, but the assignment mechanism still needs defining.
+2. **User removal:** Should admins be able to remove other admins, or only staff, students, and visitors?
+3. **Password storage:** The proposal says to avoid plaintext passwords, but you can decide how much security implementation is appropriate for the project.
+4. **Original versus extended requirements:** The role-based registration, authentication, and user-management system extends the original challenge. Keep that distinction clear when discussing your implementation with your team.
+
+**My recommendation:** Tweak this proposal first, then use it as your reference while designing the modules and splitting the work. You don't need to solve every implementation detail before you begin—but the permission rules and request lifecycle should be agreed upon before you write them.

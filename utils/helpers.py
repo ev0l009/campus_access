@@ -13,40 +13,40 @@ def generate_id(user_type):
     suffix = "".join(secrets.choice(pool) for _ in range(4))
     return f"{preffix[user_type]}_{suffix}"
 
-def generate_user_data(user_type, user_id, password):
+def generate_user_data(user_type, user_id, name, password):
     if user_type == "admin":
         return {
-                "adm_id": user_id,
-                "name": "",
-                "password": password,
-                "approved_requests_id": [],
-                "issued_card_ids": []
-            }
+            "adm_id": user_id, 
+            "name": name, 
+            "password": password, 
+            "approved_requests_id": [], 
+            "issued_card_ids": []
+        }
     elif user_type == "staff":
         return {
-                "stf_id": user_id,
-                "name": "",
-                "password": password,
-                "issued_card_id": "",
-                "created_requests_id": [],
-                "approved_requests_id": [],
-                "issued_card": ""
-            }
+            "stf_id": user_id, 
+            "name": name, 
+            "password": password, 
+            "issued_card_id": "", 
+            "created_requests_id": [], 
+            "approved_requests_id": [], 
+            "issued_card": ""
+        }
     elif user_type == "student":
         return {
-                "stf_id": user_id,
-                "name": "",
-                "password": password,
-                "created_requests_id": [],
-                "issued_card_id": "",
-                "issued_card": ""
-            }
+            "std_id": user_id, 
+            "name": name, 
+            "password": password, 
+            "created_requests_id": [], 
+            "issued_card_id": "", 
+            "issued_card": ""
+        }
     elif user_type == "visitor":
         return {
-                "vst_id": user_id,
-                "name": "",
-                "password": password,
-                "created_requests_id": [],
-                "issued_card_id": "",
-                "issued_card": ""
-            }
+            "vst_id": user_id, 
+            "name": name, 
+            "password": password, 
+            "created_requests_id": [], 
+            "issued_card_id": "", 
+            "issued_card": ""
+        }

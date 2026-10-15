@@ -1,4 +1,5 @@
 from utils.helpers import generate_id, generate_user_data
+from services.storage import save_session
 
 def create_user(user_type, data):
     name = input("Enter your name: ")
@@ -15,7 +16,9 @@ def create_user(user_type, data):
 
     id = generate_id(user_type)
 
-    data["users"][user_type][id] = generate_user_data(user_type, id, password)
+    data["users"][user_type][id] = generate_user_data(user_type, id, name, password)
+
+    save_session(data)
 
     print(
         "Registeration successful!\n"
@@ -25,14 +28,14 @@ def create_user(user_type, data):
     return "login"
 
 
-def login_user(user, data):
+def login_user(user_type, data):
     id = input("Enter your ID: ")
     password = input("Enter your password: ")
 
-    if id not in data["users"][user]:
+    if id not in data["users"][user_type]:
         raise ValueError("Invalid ID credentials")
 
-    if password != data["users"][user][id]["password"]:
+    if password != data["users"][user_type][id]["password"]:
         raise ValueError("Invalid password credentials")
 
-    return "dashboard", data["users"][user][id]
+    return "dashboard", data["users"][user_type][id]

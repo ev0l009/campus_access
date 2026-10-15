@@ -15,10 +15,24 @@ def save_session(data):
 def load_data():
     DB_DIR.mkdir(parents=True, exist_ok=True)
 
+    default_data = {
+        "users": {
+            "admin": {},
+            "staff": {},
+            "student": {},
+            "visitor": {}
+        }
+    }
+
+    if not DB_FILE_PATH.exists() or DB_FILE_PATH.stat().st_size == 0:
+        print("New database initialized")
+        save_session(default_data)
+        return default_data
+
     try:
         with open(DB_FILE_PATH, "r") as file:
-            raw_data = json.load(file)
-    except:
-        raise
-    else:
-        return raw_data
+            return json.load(file)
+    except json.JSONDecodeError:
+        print("")
+        save_session(default_data)
+        return default_data

@@ -11,18 +11,6 @@ def campus_access_runner():
     auth_type = None
     user_type = None
     user = None
-    data = {
-        "users": {
-            "admin": {},
-            "staff": {},
-            "student": {},
-            "visitor": {}
-        },
-        "requests": {},
-        "cards": {}
-    }
-
-    
 
     while current_state != "exit":
 
@@ -32,7 +20,6 @@ def campus_access_runner():
             print(err)
         else:
             print("\nLoading session...\n")
-            print(data)
 
         if current_state == "auth_selection":
             result = get_auth_choice()
@@ -61,7 +48,7 @@ def campus_access_runner():
                 auth_type = create_user(user_type, data)
 
         elif current_state == "dashboard":
-            print(user)
+            
             break
 
     try:

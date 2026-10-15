@@ -1,18 +1,33 @@
 {
     "users": {
         "admin": {
-            "adm_NMMn": {
-                "adm_id": "adm_NMMn",
-                "name": "",
+            "adm_RuLW": {
+                "adm_id": "adm_RuLW",
+                "name": "Val",
+                "password": "pass",
+                "approved_requests_id": [],
+                "issued_card_ids": []
+            },
+            "adm_WxwB": {
+                "adm_id": "adm_WxwB",
+                "name": "Val",
                 "password": "pass",
                 "approved_requests_id": [],
                 "issued_card_ids": []
             }
         },
-        "staff": {},
+        "staff": {
+            "stf_pzEM": {
+                "stf_id": "stf_pzEM",
+                "name": "Helen",
+                "password": "pass",
+                "issued_card_id": "",
+                "created_requests_id": [],
+                "approved_requests_id": [],
+                "issued_card": ""
+            }
+        },
         "student": {},
         "visitor": {}
-    },
-    "requests": {},
-    "cards": {}
+    }
 }
